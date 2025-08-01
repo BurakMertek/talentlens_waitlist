@@ -1,56 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, SendHorizonal, CheckCircle, MapPin } from 'lucide-react';
-
+import { Mail, SendHorizonal, MapPin } from 'lucide-react';
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mdkdlogo";
 
 const WaitlistForm = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  
-  const handleFormSubmit = (e: React.FormEvent) => {
-    setIsSubmitted(true);
-  };
-
-  if (isSubmitted) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="text-center"
-      >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="mb-6"
-        >
-          <CheckCircle className="w-16 h-16 text-waitlist-white mx-auto" />
-        </motion.div>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-2xl font-bold text-waitlist-white mb-4"
-        >
-          You're on the list!
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-waitlist-gray"
-        >
-          We'll notify you when we launch. Thanks for your interest!
-        </motion.p>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.form
       action={FORMSPREE_ENDPOINT}
@@ -59,7 +15,6 @@ const WaitlistForm = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      onSubmit={handleFormSubmit}
     >
       {/* Email Input */}
       <div className="relative">
@@ -93,6 +48,11 @@ const WaitlistForm = () => {
           className="h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
         />
       </div>
+
+      {/* Optional: Custom Redirect after submit */}
+      {/* 
+      <input type="hidden" name="_redirect" value="https://yourdomain.com/thanks" />
+      */}
 
       {/* Submit Button */}
       <Button
