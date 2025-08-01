@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Mail, SendHorizonal, CheckCircle, MapPin } from "lucide-react";
 
 
-const FORMSPREE_FORM_ID = "mdkdlogo";
+const FORMSPREE_FORM_ID = "https://formspree.io/f/mdkdlogo";
 
 const WaitlistForm = () => {
   const [state, handleSubmit] = useForm(FORMSPREE_FORM_ID);
