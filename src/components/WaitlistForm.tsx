@@ -14,21 +14,43 @@ const WaitlistForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes('@')) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-    if (!city.trim() || !country.trim()) {
-      toast.error('Please enter your city and country');
-      return;
-    }
+  e.preventDefault();
+  if (!email || !email.includes('@')) {
+    toast.error('Please enter a valid email address');
+    return;
+  }
+  if (!city.trim() || !country.trim()) {
+    toast.error('Please enter your city and country');
+    return;
+  }
 
-    setIsLoading(true);
-    setIsSubmitted(true);
+  setIsLoading(true);
+  try {
+    const response = await fetch('/.netlify/functions/submission-created', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        payload: {
+          data: { email, city, country }
+        }
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast.success('Welcome to the waitlist!');
+      setIsSubmitted(true);
+    } else {
+      toast.error(result.error || 'Something went wrong. Please try again.');
+    }
+  } catch (error) {
+    toast.error('Submission failed. Please check your connection and try again.');
+  } finally {
     setIsLoading(false);
-    toast.success('Welcome to the waitlist!');
-  };
+  }
+};
+
 
   if (isSubmitted) {
     return (
