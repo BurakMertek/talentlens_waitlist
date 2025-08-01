@@ -1,56 +1,19 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
 import { Mail, SendHorizonal, CheckCircle, MapPin } from 'lucide-react';
 
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mdkdlogo";
+
 const WaitlistForm = () => {
-  const [email, setEmail] = useState('');
-  const [city, setCity] = useState('');
-  const [country, setCountry] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!email || !email.includes('@')) {
-    toast.error('Please enter a valid email address');
-    return;
-  }
-  if (!city.trim() || !country.trim()) {
-    toast.error('Please enter your city and country');
-    return;
-  }
-
-  setIsLoading(true);
-  try {
-    const response = await fetch('/.netlify/functions/submission-created', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        payload: {
-          data: { email, city, country }
-        }
-      }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      toast.success('Welcome to the waitlist!');
-      setIsSubmitted(true);
-    } else {
-      toast.error(result.error || 'Something went wrong. Please try again.');
-    }
-  } catch (error) {
-    toast.error('Submission failed. Please check your connection and try again.');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  
+  const handleFormSubmit = (e: React.FormEvent) => {
+    setIsSubmitted(true);
+  };
 
   if (isSubmitted) {
     return (
@@ -90,18 +53,14 @@ const WaitlistForm = () => {
 
   return (
     <motion.form
-      name="waitlist"
+      action={FORMSPREE_ENDPOINT}
       method="POST"
-      data-netlify="true"
-      onSubmit={handleSubmit}
       className="mx-auto max-w-lg space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
+      onSubmit={handleFormSubmit}
     >
-      {/* Hidden input for Netlify */}
-      <input type="hidden" name="form-name" value="waitlist" />
-      
       {/* Email Input */}
       <div className="relative">
         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -109,8 +68,6 @@ const WaitlistForm = () => {
           type="email"
           name="email"
           placeholder="Your email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
           className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
         />
@@ -124,8 +81,6 @@ const WaitlistForm = () => {
             type="text"
             name="city"
             placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
             required
             className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
           />
@@ -134,8 +89,6 @@ const WaitlistForm = () => {
           type="text"
           name="country"
           placeholder="Country"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
           required
           className="h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
         />
@@ -144,20 +97,12 @@ const WaitlistForm = () => {
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isLoading}
         className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-medium"
       >
-        {isLoading ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-            Joining...
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span>Join Waitlist</span>
-            <SendHorizonal className="w-4 h-4" />
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <span>Join Waitlist</span>
+          <SendHorizonal className="w-4 h-4" />
+        </div>
       </Button>
     </motion.form>
   );
