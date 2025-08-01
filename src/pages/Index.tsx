@@ -3,80 +3,41 @@ import { motion } from 'framer-motion';
 import WaitlistForm from '@/components/WaitlistForm';
 import WaitlistStats from '@/components/WaitlistStats';
 import { Logo } from '@/components/Logo';
+import { useOptimizedUnicornStudio } from '@/hooks/useOptimizedUnicornStudio';
 
 
 const Index = () => {
-  React.useEffect(() => {
-    console.log('Index component mounted');
-    
-    // Check if UnicornStudio is available
-    const checkUnicornStudio = () => {
-      if (window.UnicornStudio) {
-        console.log('UnicornStudio is available:', window.UnicornStudio);
-        console.log('UnicornStudio isInitialized:', window.UnicornStudio.isInitialized);
-        console.log('UnicornStudio scenes:', window.UnicornStudio.scenes);
-        
-        // Try to manually initialize if needed
-        if (window.UnicornStudio.isInitialized && window.UnicornStudio.scenes.length === 0) {
-          console.log('Attempting manual initialization...');
-          window.UnicornStudio.init()
-            .then((scenes) => {
-              console.log('Manual initialization successful, scenes:', scenes);
-            })
-            .catch((err) => {
-              console.error('Manual initialization failed:', err);
-            });
-        }
-      } else {
-        console.log('UnicornStudio is not available yet');
-      }
-    };
-
-    // Check immediately
-    checkUnicornStudio();
-    
-    // Check periodically for a few seconds
-    const interval = setInterval(() => {
-      checkUnicornStudio();
-      if (window.UnicornStudio && window.UnicornStudio.isInitialized && window.UnicornStudio.scenes.length > 0) {
-        console.log('UnicornStudio successfully initialized with scenes');
-        clearInterval(interval);
-      }
-    }, 500);
-
-    // Clean up after 10 seconds
-    setTimeout(() => {
-      clearInterval(interval);
-      console.log('Stopped checking for UnicornStudio');
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { elementRef, toggle } = useOptimizedUnicornStudio({
+    projectId: "jBlnKCGZVWrPIrXnJfvF",
+    enabled: true,
+    dpi: 1.0, // Reduced from 1.5 for better performance
+    scale: 1,
+    lazyLoad: true
+  });
 
   return (
     <div className="min-h-screen relative">
-      {/* Unicorn Studio Background */}
+      {/* Optimized Unicorn Studio Background */}
       <div 
-        data-us-project="jBlnKCGZVWrPIrXnJfvF"
-        data-us-scale="1"
-        data-us-dpi="1.5"
-        data-us-lazyload="false"
+        ref={elementRef}
         data-us-alttext="Animated background"
         data-us-arialabel="Unicorn Studio animated background scene"
         className="fixed inset-0 w-full h-full -z-10"
         style={{ width: '100vw', height: '100vh' }}
-        ref={(el) => {
-          if (el) {
-            console.log('Background div ref set:', el);
-            console.log('Background div attributes:', {
-              'data-us-project': el.getAttribute('data-us-project'),
-              'data-us-scale': el.getAttribute('data-us-scale'),
-              'data-us-dpi': el.getAttribute('data-us-dpi'),
-              'data-us-lazyload': el.getAttribute('data-us-lazyload')
-            });
-          }
-        }}
       ></div>
+
+      {/* Static Background Fallback */}
+      <div className="static-background fixed inset-0 w-full h-full -z-10 hidden"></div>
+
+      {/* Performance Controls (dev only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <button
+          onClick={toggle}
+          className="fixed top-4 right-4 z-50 bg-black/50 text-white px-3 py-1 rounded text-xs"
+        >
+          Toggle Animation
+        </button>
+      )}
 
 
       {/* Logo */}

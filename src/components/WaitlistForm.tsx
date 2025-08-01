@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Mail, SendHorizonal, CheckCircle } from 'lucide-react';
+import { Mail, SendHorizonal, CheckCircle, MapPin } from 'lucide-react';
 
 const WaitlistForm = () => {
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,16 +19,15 @@ const WaitlistForm = () => {
       toast.error('Please enter a valid email address');
       return;
     }
+    if (!city.trim() || !country.trim()) {
+      toast.error('Please enter your city and country');
+      return;
+    }
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitted(true);
-      setIsLoading(false);
-      toast.success('Welcome to the waitlist!');
-      console.log('Email submitted:', email);
-    }, 1000);
+    setIsSubmitted(true);
+    setIsLoading(false);
+    toast.success('Welcome to the waitlist!');
   };
 
   if (isSubmitted) {
@@ -66,38 +68,75 @@ const WaitlistForm = () => {
 
   return (
     <motion.form
+      name="waitlist"
+      method="POST"
+      data-netlify="true"
       onSubmit={handleSubmit}
-      className="mx-auto max-w-lg"
+      className="mx-auto max-w-lg space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
     >
-      <form
-                                    action=""
-                                    className="mx-auto max-w-sm">
-                                    <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-[calc(var(--radius)+0.5rem)] border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
-                                        <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
+      {/* Hidden input for Netlify */}
+      <input type="hidden" name="form-name" value="waitlist" />
+      
+      {/* Email Input */}
+      <div className="relative">
+        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          type="email"
+          name="email"
+          placeholder="Your email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+        />
+      </div>
 
-                                        <input
-                                            placeholder="Your mail address"
-                                            className="h-12 w-full bg-transparent pl-12 focus:outline-none"
-                                            type="email"
-                                        />
+      {/* Location Inputs */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            type="text"
+            name="city"
+            placeholder="City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            required
+            className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+          />
+        </div>
+        <Input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          required
+          className="h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+        />
+      </div>
 
-                                        <div className="md:pr-1.5 lg:pr-0">
-                                            <Button
-                                                aria-label="submit"
-                                                size="sm"
-                                                className="rounded-(--radius)">
-                                                <span className="hidden md:block">Get Started</span>
-                                                <SendHorizonal
-                                                    className="relative mx-auto size-5 md:hidden"
-                                                    strokeWidth={2}
-                                                />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </form>
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-medium"
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            Joining...
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span>Join Waitlist</span>
+            <SendHorizonal className="w-4 h-4" />
+          </div>
+        )}
+      </Button>
     </motion.form>
   );
 };
