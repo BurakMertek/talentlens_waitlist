@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, SendHorizonal, MapPin } from 'lucide-react';
 
-const API_ENDPOINT = "/api/sendgrid-waitlist"; // <-- Change if using a Netlify function, e.g., "/.netlify/functions/send-email"
+
+const API_ENDPOINT = "https://eomc58yrofjnm3.m.pipedream.net";
 
 const WaitlistForm = () => {
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const payload = Object.fromEntries(formData.entries());
 
@@ -27,6 +32,8 @@ const WaitlistForm = () => {
       }
     } catch (error) {
       alert("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +82,10 @@ const WaitlistForm = () => {
       <Button
         type="submit"
         className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-medium"
+        disabled={loading}
       >
         <div className="flex items-center gap-2">
-          <span>Join Waitlist</span>
+          <span>{loading ? "Joining..." : "Join Waitlist"}</span>
           <SendHorizonal className="w-4 h-4" />
         </div>
       </Button>
