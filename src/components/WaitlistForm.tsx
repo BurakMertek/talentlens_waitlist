@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Mail, SendHorizonal, MapPin } from 'lucide-react';
 
 
-const API_ENDPOINT = "https://eomc58yrofjnm3.m.pipedream.net";
+const API_ENDPOINT = "/.netlify/functions/sendgrid-waitlist";
 
 const WaitlistForm = () => {
   const [loading, setLoading] = useState(false);
@@ -28,9 +28,13 @@ const WaitlistForm = () => {
         alert("You joined the waitlist!");
         e.currentTarget.reset();
       } else {
-        alert("Something went wrong. Please try again.");
+        const errData = await res.json().catch(() => ({}));
+        alert(
+          "Something went wrong. " +
+            (errData?.error ? `(${errData.error})` : "Please try again.")
+        );
       }
-    } catch (error) {
+    } catch (error: any) {
       alert("Network error. Please try again.");
     } finally {
       setLoading(false);
