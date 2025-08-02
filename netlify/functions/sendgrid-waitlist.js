@@ -17,8 +17,8 @@ exports.handler = async (event) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
   const msg = {
-    to: 'talentlens.business@gmail.com', // your recipient
-    from: 'talentlens.business@gmail.com', // must be a verified sender in SendGrid
+    to: 'talentlens.business@gmail.com', 
+    from: 'talentlens.business@gmail.com', 
     subject: `New Waitlist Submission from ${email}`,
     text: `New waitlist signup!
 Email: ${email}

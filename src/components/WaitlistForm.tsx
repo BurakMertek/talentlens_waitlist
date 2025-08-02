@@ -56,7 +56,7 @@ const WaitlistForm = () => {
           name="email"
           placeholder="Your email address"
           required
-          className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+          className="pl-10 h-12 bg-background/80 border-white/20 text-black placeholder:text-gray-400"
         />
       </div>
 
@@ -69,7 +69,7 @@ const WaitlistForm = () => {
             name="city"
             placeholder="City"
             required
-            className="pl-10 h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+            className="pl-10 h-12 bg-background/80 border-white/20 text-black placeholder:text-gray-400"
           />
         </div>
         <Input
@@ -77,7 +77,7 @@ const WaitlistForm = () => {
           name="country"
           placeholder="Country"
           required
-          className="h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
+          className="pl-10 h-12 bg-background/80 border-white/20 text-black placeholder:text-gray-400"
         />
       </div>
 
