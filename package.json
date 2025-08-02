@@ -62,7 +62,8 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.3",
     "zod": "^3.23.8",
-    "@sendgrid/mail": "^8.1.5"
+    "@sendgrid/mail": "^8.1.5",
+    "@types/next": "^13.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
