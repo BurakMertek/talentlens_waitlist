@@ -4,14 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, SendHorizonal, MapPin } from 'lucide-react';
 
-// <-- Replace with your real Formspree endpoint!
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mdkdlogo";
+const API_ENDPOINT = "/api/sendgrid-waitlist"; // <-- Change if using a Netlify function, e.g., "/.netlify/functions/send-email"
 
 const WaitlistForm = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        alert("You joined the waitlist!");
+        e.currentTarget.reset();
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      alert("Network error. Please try again.");
+    }
+  };
+
   return (
     <motion.form
-      action={FORMSPREE_ENDPOINT}
-      method="POST"
+      onSubmit={handleSubmit}
       className="mx-auto max-w-lg space-y-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -49,11 +70,6 @@ const WaitlistForm = () => {
           className="h-12 bg-background/80 border-white/20 text-white placeholder:text-gray-400"
         />
       </div>
-
-      {/* Optional: Custom Redirect after submit */}
-      {/* 
-      <input type="hidden" name="_redirect" value="https://yourdomain.com/thanks" />
-      */}
 
       {/* Submit Button */}
       <Button
